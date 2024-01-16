@@ -13,8 +13,7 @@ import androidx.navigation.NavController
 import de.hhn.labapp.persistence.crm.factories.InvoicesFactory
 import de.hhn.labapp.persistence.crm.model.DatabaseProvider.withDatabase
 import de.hhn.labapp.persistence.crm.model.entities.Customer
-import de.hhn.labapp.persistence.crm.model.Invoice
-import de.hhn.labapp.persistence.crm.model.Invoices
+import de.hhn.labapp.persistence.crm.model.entities.Invoice
 import kotlinx.coroutines.launch
 
 class InvoiceDetailsViewModel(
@@ -66,15 +65,18 @@ class InvoiceDetailsViewModel(
         invoice.customerId = customerId
         invoice.date = date
 
-        if (invoice.id == null) {
-            Invoices.upsert(invoice)
+        withDatabase {
+            try {
+                invoiceDao().upsert(invoice)
+                mainThreadHandler.post { navController.popBackStack() }
+            } catch (e: SQLiteConstraintException) {
+                Log.e("InvoiceDetailsViewModel", "Failed to save invoice", e)
+            }
         }
-
-        navController.popBackStack()
     }
 
     fun onDelete() {
-        Invoices.delete(invoice)
+        withDatabase { invoiceDao().delete(invoice) }
         navController.popBackStack()
     }
 

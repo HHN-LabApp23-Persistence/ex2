@@ -3,12 +3,9 @@ package de.hhn.labapp.persistence.crm.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.hhn.labapp.persistence.crm.model.DatabaseProvider
 import de.hhn.labapp.persistence.crm.model.DatabaseProvider.withDatabase
 import de.hhn.labapp.persistence.crm.model.entities.Customer
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CustomersOverviewViewModel : ViewModel() {
     val customers = mutableStateOf(emptyList<Customer>())

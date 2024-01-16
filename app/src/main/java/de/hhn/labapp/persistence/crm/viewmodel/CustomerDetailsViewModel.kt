@@ -2,15 +2,12 @@ package de.hhn.labapp.persistence.crm.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import de.hhn.labapp.persistence.crm.factories.CustomerFactory
 import de.hhn.labapp.persistence.crm.model.DatabaseProvider.withDatabase
 import de.hhn.labapp.persistence.crm.model.entities.Customer
-import kotlinx.coroutines.launch
 
 class CustomerDetailsViewModel(
     private val customer: Customer,
@@ -49,9 +46,7 @@ class CustomerDetailsViewModel(
         customer.city = city
         customer.country = country
 
-        if (customer.id == null) {
-            withDatabase { customerDao().insert(customer) }
-        }
+        withDatabase { customerDao().upsert(customer) }
 
         navController.popBackStack()
     }
